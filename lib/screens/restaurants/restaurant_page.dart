@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import './widgets/restaurant_card.dart';
 import '../../models/Restaurant.dart';
@@ -12,6 +13,13 @@ class RestaurantsPage extends StatefulWidget {
 }
 
 class _RestaurantsPageState extends State<RestaurantsPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+  }
+
   List<Restaurant> _restaurants = [
     new Restaurant(
         name: 'Carneiro no Ponto',

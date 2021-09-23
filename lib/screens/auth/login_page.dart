@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import './widgets/heading_auth.dart';
 
@@ -8,6 +9,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+
     _deviceWidth = MediaQuery.of(context).size.width;
     _deviceHeight = MediaQuery.of(context).size.height;
 
@@ -60,7 +63,7 @@ class LoginScreen extends StatelessWidget {
   Widget _emailTextField(context) {
     return TextFormField(
       autocorrect: false,
-      autofocus: true,
+      // autofocus: true,
       style: TextStyle(color: Theme.of(context).primaryColor),
       cursorColor: Theme.of(context).primaryColor,
       decoration: InputDecoration(
@@ -79,7 +82,7 @@ class LoginScreen extends StatelessWidget {
   Widget _passwordTextField(context) {
     return TextFormField(
       autocorrect: false,
-      autofocus: true,
+      // autofocus: true,
       obscureText: true,
       style: TextStyle(color: Theme.of(context).primaryColor),
       cursorColor: Theme.of(context).primaryColor,

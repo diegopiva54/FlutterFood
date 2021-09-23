@@ -8,9 +8,15 @@ class FoodCard extends StatelessWidget {
   String description;
   String price;
   String image;
+  bool NotShowIconCart;
 
   FoodCard(
-      {this.identify, this.title, this.description, this.price, this.image});
+      {this.identify,
+      this.title,
+      this.description,
+      this.price,
+      this.image,
+      this.NotShowIconCart = false});
 
   @override
   Widget build(BuildContext context) {
@@ -82,11 +88,13 @@ class FoodCard extends StatelessWidget {
   }
 
   Widget _buildButtonCart(context) {
-    return Container(
-      child: IconTheme(
-        data: IconThemeData(color: Theme.of(context).primaryColor),
-        child: Icon(Icons.shopping_cart_outlined),
-      ),
-    );
+    return NotShowIconCart
+        ? Container()
+        : Container(
+            child: IconTheme(
+              data: IconThemeData(color: Theme.of(context).primaryColor),
+              child: Icon(Icons.shopping_cart_outlined),
+            ),
+          );
   }
 }

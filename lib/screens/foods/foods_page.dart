@@ -83,7 +83,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: _buildScreen(),
       bottomNavigationBar: BottonNavigatorCurved(
-          1), // Barra de menú do botton widgets personalizados
+          0), // Barra de menú do botton widgets personalizados
     );
   }
 

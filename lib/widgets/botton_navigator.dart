@@ -19,18 +19,23 @@ class BottonNavigatorCurved extends StatelessWidget {
         Icon(Icons.shopping_cart_outlined),
         Icon(Icons.person),
       ],
+      animationDuration: Duration(milliseconds: 500),
       onTap: (index) {
         switch (index) {
           case 0:
             Navigator.pushReplacementNamed(context, '/restaurants');
             break;
           case 1:
-            Navigator.pushReplacementNamed(context, '/foods');
+            Navigator.pushReplacementNamed(context, '/orders');
             break;
           case 2:
             Navigator.pushReplacementNamed(context, '/cart');
             break;
+          case 3:
+            Navigator.pushReplacementNamed(context, '/profile');
+            break;
           default:
+            Navigator.pushReplacementNamed(context, '/restaurants');
         }
       },
     );
