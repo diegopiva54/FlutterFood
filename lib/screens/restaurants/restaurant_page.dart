@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import './widgets/restaurant_card.dart';
 import '../../models/Restaurant.dart';
 import '../../widgets/botton_navigator.dart';
+import '../../data/network/dio_client.dart';
+import '../../data/network/repositories/restaurant_repository.dart';
 
 class RestaurantsPage extends StatefulWidget {
   RestaurantsPage({Key key}) : super(key: key);
@@ -18,45 +20,11 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
     super.initState();
 
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    getRestaurants();
   }
 
-  List<Restaurant> _restaurants = [
-    new Restaurant(
-        name: 'Carneiro no Ponto',
-        contact: 'carneiro@teste.com',
-        image: '',
-        uuid: 'fafdafaadfa'),
-    new Restaurant(
-        name: 'Carneiro no Ponto 2',
-        contact: 'carneiro2@teste.com',
-        image: '',
-        uuid: 'adfqfadfqsd'),
-    new Restaurant(
-        name: 'Carneiro no Ponto 3',
-        contact: 'carneiro3@teste.com',
-        image: '',
-        uuid: 'fqfasrqcaafa'),
-    new Restaurant(
-        name: 'Carneiro no Ponto 3',
-        contact: 'carneiro3@teste.com',
-        image: '',
-        uuid: 'fqfasrqcaafa'),
-    new Restaurant(
-        name: 'Carneiro no Ponto 3',
-        contact: 'carneiro3@teste.com',
-        image: '',
-        uuid: 'fqfasrqcaafa'),
-    new Restaurant(
-        name: 'Carneiro no Ponto 3',
-        contact: 'carneiro3@teste.com',
-        image: '',
-        uuid: 'fqfasrqcaafa'),
-    new Restaurant(
-        name: 'Carneiro no Ponto 3',
-        contact: 'carneiro3@teste.com',
-        image: '',
-        uuid: 'fqfasrqcaafa'),
-  ];
+  List<Restaurant> _restaurants = [];
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +34,8 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
         centerTitle: true,
       ),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: _buildRestaurants(context),
+      body:
+          isLoading ? CircularProgressIndicator() : _buildRestaurants(context),
       bottomNavigationBar: BottonNavigatorCurved(0),
     );
   }
@@ -87,5 +56,16 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
         },
       ),
     );
+  }
+
+  void getRestaurants() async {
+    setState(() => isLoading = true);
+
+    final restaurants = await RestaurantRepository().getRestaurants();
+
+    setState(() {
+      _restaurants.addAll(restaurants);
+      isLoading = false;
+    });
   }
 }

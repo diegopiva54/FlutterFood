@@ -34,8 +34,7 @@ class RestaurantCard extends StatelessWidget {
                   Container(
                     width: 60,
                     height: 60,
-                    child: ShowImageCachedNetwork(
-                        'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png'),
+                    child: ShowImageCachedNetwork(this.image),
                   ),
                   VerticalDivider(color: Colors.black26),
                   Expanded(
