@@ -1,18 +1,18 @@
 import 'dart:convert';
 
 class Food {
-  String identify;
   String name;
+  String identify;
   String description;
   double price;
   String image;
 
-  Food({this.identify, this.name, this.description, this.price, this.image});
+  Food({this.name, this.identify, this.description, this.price, this.image});
 
   factory Food.fromJson(jsonData) {
     return Food(
+      name: jsonData['name'],
       identify: jsonData['identify'],
-      name: jsonData['name '],
       description: jsonData['description'],
       price: jsonData['price'],
       image: jsonData['image'],
@@ -21,8 +21,8 @@ class Food {
 
   toJson() {
     return jsonEncode({
-      'identify': identify,
       'name ': name,
+      'identify': identify,
       'description': description,
       'price': price,
       'image': image,

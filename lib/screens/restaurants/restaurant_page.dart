@@ -16,19 +16,20 @@ class RestaurantsPage extends StatefulWidget {
 }
 
 class _RestaurantsPageState extends State<RestaurantsPage> {
-  @override
-  void initState() {
-    super.initState();
-
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-    getRestaurants();
-  }
-
   List<Restaurant> _restaurants = [];
   bool isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    getRestaurants();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Restaurantes'),
@@ -64,7 +65,8 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
 
     setState(() {
       _restaurants.addAll(restaurants);
-      isLoading = false;
     });
+
+    setState(() => isLoading = false);
   }
 }

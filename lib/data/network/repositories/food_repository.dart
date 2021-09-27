@@ -12,9 +12,7 @@ class FoodRepository {
     final response = await _httpClient.get("$API_VERSION/products",
         queryParameters: {'token_company': tokenCompany});
 
-    var produt = response.data['data'];
-
-    // print(produt);
+    // print(response.data['data']);
 
     return (response.data['data'] as List).toList();
   }

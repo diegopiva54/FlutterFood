@@ -33,7 +33,8 @@ class RestaurantCard extends StatelessWidget {
                   Container(
                     width: 60,
                     height: 60,
-                    child: ShowImageCachedNetwork(this.restaurant.image),
+                    child: Image.asset('assets/images/IconeFlutterFood.png'),
+                    // child: ShowImageCachedNetwork(this.restaurant.image),
                   ),
                   VerticalDivider(color: Colors.black26),
                   Expanded(

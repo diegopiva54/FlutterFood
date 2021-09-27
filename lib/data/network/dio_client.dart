@@ -14,11 +14,11 @@ class DioClient {
     try {
       final Response response =
           await _dio.get(url, queryParameters: queryParameters);
-      print(response);
+      // print(response);
 
       return response;
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
       throw e;
     }
   }
@@ -28,11 +28,11 @@ class DioClient {
     try {
       final Response response = await _dio.post(url,
           data: formData, queryParameters: queryParameters);
-      print(response);
+      // print(response);
 
       return response;
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
       throw e;
     }
   }

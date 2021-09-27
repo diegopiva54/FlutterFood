@@ -60,7 +60,7 @@ class FoodCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            '${this.food.name}',
+            '${food.name}',
             style: TextStyle(
                 color: Colors.black54,
                 fontSize: 16,

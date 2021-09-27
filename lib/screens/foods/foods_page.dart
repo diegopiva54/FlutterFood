@@ -13,8 +13,6 @@ import '../../stores/categories.store.dart';
 import '../../stores/rastaurant.store.dart';
 
 class FoodsScreen extends StatefulWidget {
-  FoodsScreen({Key key}) : super(key: key);
-
   @override
   _FoodsScreenState createState() => _FoodsScreenState();
 }

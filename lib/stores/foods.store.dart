@@ -68,11 +68,11 @@ abstract class _FoodsStoreBase with Store {
 
     final response = await _repository.getFoods(tokenCompany);
 
+    print(response);
+
     setLoading(false);
 
-    response.map((food) {
-      return addFood(Food.fromJson(food));
-    }).toList();
+    response.map((food) => addFood(Food.fromJson(food))).toList();
   }
 
   /**
