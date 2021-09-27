@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+
+import '../stores/foods.store.dart';
 
 class BottonNavigatorCurved extends StatelessWidget {
   int _active_menu = 0;
+
+  // FoodsStore storeFoods = new FoodsStore();
 
   BottonNavigatorCurved(this._active_menu);
 
@@ -16,7 +22,7 @@ class BottonNavigatorCurved extends StatelessWidget {
       items: <Widget>[
         Icon(Icons.home),
         Icon(Icons.list),
-        Icon(Icons.shopping_cart_outlined),
+        _iconCart(context),
         Icon(Icons.person),
       ],
       animationDuration: Duration(milliseconds: 500),
@@ -38,6 +44,37 @@ class BottonNavigatorCurved extends StatelessWidget {
             Navigator.pushReplacementNamed(context, '/restaurants');
         }
       },
+    );
+  }
+
+  Widget _iconCart(context) {
+    final storeFoods = Provider.of<FoodsStore>(context);
+
+    return Stack(
+      children: [
+        Icon(Icons.shopping_cart_outlined),
+        Positioned(
+          right: -1,
+          child: Container(
+            padding: EdgeInsets.all(1),
+            decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            constraints: BoxConstraints(
+              minWidth: 12,
+              minHeight: 12,
+            ),
+            child: Observer(builder: (_) {
+              return Text(
+                storeFoods.cartItems.length.toString(),
+                style: TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              );
+            }),
+          ),
+        )
+      ],
     );
   }
 }
