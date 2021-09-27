@@ -6,6 +6,7 @@ import '../../models/Restaurant.dart';
 import '../../widgets/botton_navigator.dart';
 import '../../data/network/dio_client.dart';
 import '../../data/network/repositories/restaurant_repository.dart';
+import '../../widgets/custom_circular_progress_indicator.dart';
 
 class RestaurantsPage extends StatefulWidget {
   RestaurantsPage({Key key}) : super(key: key);
@@ -34,8 +35,11 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
         centerTitle: true,
       ),
       backgroundColor: Theme.of(context).backgroundColor,
-      body:
-          isLoading ? CircularProgressIndicator() : _buildRestaurants(context),
+      body: isLoading
+          ? CustomCircularProgressIndicator(
+              textLabel: 'Carregando...',
+            )
+          : _buildRestaurants(context),
       bottomNavigationBar: BottonNavigatorCurved(0),
     );
   }
@@ -47,12 +51,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
         itemBuilder: (context, index) {
           final Restaurant restaurant = _restaurants[index];
 
-          return RestaurantCard(
-            uuid: restaurant.uuid,
-            name: restaurant.name,
-            image: restaurant.image,
-            contact: restaurant.contact,
-          );
+          return RestaurantCard(restaurant: restaurant);
         },
       ),
     );

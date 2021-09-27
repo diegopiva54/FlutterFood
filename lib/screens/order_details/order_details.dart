@@ -17,39 +17,39 @@ class OrderDetailsScreen extends StatelessWidget {
       comment: 'Sem cebola',
       foods: [
         Food(
-            title: 'Pizza Calabresa',
+            name: 'Pizza Calabresa',
             description: 'massa de pizza, presunto, mussarela e calabresa',
             image:
                 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-            price: '56.50',
+            price: 56.50,
             identify: 'jfkadsopajfpa'),
         Food(
-            title: 'Pizza Marguerita',
+            name: 'Pizza Marguerita',
             description: 'massa de pizza, presunto, mussarela e manjericão',
             image:
                 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-            price: '59.50',
+            price: 59.50,
             identify: 'fafdaca'),
         Food(
-            title: 'Pizza Marguerita',
+            name: 'Pizza Marguerita',
             description: 'massa de pizza, presunto, mussarela e manjericão',
             image:
                 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-            price: '59.50',
+            price: 59.50,
             identify: 'fafdaca'),
         Food(
-            title: 'Pizza Marguerita',
+            name: 'Pizza Marguerita',
             description: 'massa de pizza, presunto, mussarela e manjericão',
             image:
                 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-            price: '59.50',
+            price: 59.50,
             identify: 'fafdaca'),
         Food(
-            title: 'Pizza Marguerita',
+            name: 'Pizza Marguerita',
             description: 'massa de pizza, presunto, mussarela e manjericão',
             image:
                 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-            price: '59.50',
+            price: 59.50,
             identify: 'fafdaca'),
       ],
       evaluations: [
@@ -136,11 +136,7 @@ class OrderDetailsScreen extends StatelessWidget {
         final Food food = _order.foods[index];
 
         return FoodCard(
-          identify: food.identify,
-          title: food.title,
-          description: food.description,
-          price: food.price,
-          image: food.image,
+          food: food,
           NotShowIconCart: true,
         );
       },

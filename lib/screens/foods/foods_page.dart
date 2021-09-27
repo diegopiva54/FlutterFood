@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
-import '../../models/Category.dart';
 import '../../models/Food.dart';
+import '../../models/Restaurant.dart';
 import './widgets/Categories.dart';
 import '../../widgets/food_card.dart';
 import '../../widgets/botton_navigator.dart';
+import '../../stores/foods.store.dart';
+import '../../widgets/custom_circular_progress_indicator.dart';
+import '../../stores/categories.store.dart';
+import '../../stores/rastaurant.store.dart';
 
 class FoodsScreen extends StatefulWidget {
   FoodsScreen({Key key}) : super(key: key);
@@ -14,70 +20,33 @@ class FoodsScreen extends StatefulWidget {
 }
 
 class _FoodsScreenState extends State<FoodsScreen> {
-  List<Category> _categories = [
-    Category(name: 'Salgados', description: 'fdafafa', identify: 'fadfafa'),
-    Category(name: 'Refree', description: 'fasfsff', identify: 'afaafa'),
-    Category(name: 'Tortas', description: 'fdsfes', identify: 'fadffdsfsfafa'),
-    Category(name: 'Bolos', description: 'careafac', identify: 'fsfsfw'),
-    Category(name: 'Sucos', description: 'cafqfda', identify: 'fsfsfsfs'),
-  ];
-  List<Food> _foods = [
-    Food(
-        title: 'Pizza Calabresa',
-        description: 'massa de pizza, presunto, mussarela e calabresa',
-        image:
-            'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-        price: '56.50',
-        identify: 'jfkadsopajfpa'),
-    Food(
-        title: 'Pizza Marguerita',
-        description: 'massa de pizza, presunto, mussarela e manjericão',
-        image:
-            'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-        price: '59.50',
-        identify: 'fafdaca'),
-    Food(
-        title: 'Pizza Portuguesa',
-        description: 'massa de pizza, presunto, mussarela e cebola',
-        image:
-            'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-        price: '60.50',
-        identify: 'qeqrfafqf'),
-    Food(
-        title: 'Porção de batata',
-        description: 'massa de pizza, presunto, mussarela e calabresa',
-        image:
-            'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-        price: '50.50',
-        identify: 'cadftag'),
-    Food(
-        title: 'Porção de batata',
-        description: 'massa de pizza, presunto, mussarela e calabresa',
-        image:
-            'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-        price: '50.50',
-        identify: 'cadftag'),
-    Food(
-        title: 'Porção de batata',
-        description: 'massa de pizza, presunto, mussarela e calabresa',
-        image:
-            'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-        price: '50.50',
-        identify: 'cadftag'),
-    Food(
-        title: 'Porção de batata',
-        description: 'massa de pizza, presunto, mussarela e calabresa',
-        image:
-            'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-        price: '50.50',
-        identify: 'cadftag'),
-  ];
+  Restaurant _restaurant;
+  //FoodsStore storeFoods = new FoodsStore();
+  FoodsStore storeFoods;
+  CategoriesStore storeCategories;
+  RestaurantStore storeRestaurant;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    storeFoods = Provider.of<FoodsStore>(context);
+    storeCategories = Provider.of<CategoriesStore>(context);
+    storeRestaurant = Provider.of<RestaurantStore>(context);
+
+    RouteSettings settings = ModalRoute.of(context).settings;
+    _restaurant = settings.arguments;
+
+    storeRestaurant.setRestaurant(_restaurant);
+    storeCategories.getCategories(_restaurant.identify);
+    storeFoods.getFoodsFromApi(_restaurant.identify);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Opções'),
+        title: Text('${_restaurant.name}'),
         centerTitle: true,
       ),
       backgroundColor: Theme.of(context).backgroundColor,
@@ -89,7 +58,26 @@ class _FoodsScreenState extends State<FoodsScreen> {
 
   Widget _buildScreen() {
     return Column(
-      children: <Widget>[Categories(_categories), _buildFoods()],
+      children: <Widget>[
+        Observer(builder: (context) {
+          return storeCategories.isLoading
+              ? CustomCircularProgressIndicator(
+                  textLabel: 'Carregando categorias...')
+              : Categories(storeCategories.categories);
+        }),
+        Observer(builder: (context) {
+          return storeFoods.isLoading
+              ? CustomCircularProgressIndicator(textLabel: 'Carregando...')
+              : storeFoods.foods.length == 0
+                  ? Center(
+                      child: Text(
+                        'Nenhum Produto',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    )
+                  : _buildFoods();
+        }),
+      ],
     );
   }
 
@@ -99,15 +87,12 @@ class _FoodsScreenState extends State<FoodsScreen> {
       height: (MediaQuery.of(context).size.height - 200),
       width: MediaQuery.of(context).size.width,
       child: ListView.builder(
-          itemCount: _foods.length,
-          itemBuilder: (conext, index) {
-            final Food food = _foods[index];
+          itemCount: storeFoods.foods.length,
+          itemBuilder: (context, index) {
+            final Food food = storeFoods.foods[index];
+
             return FoodCard(
-              identify: food.identify,
-              description: food.description,
-              image: food.image,
-              price: food.price,
-              title: food.title,
+              food: food,
             );
           }),
     );

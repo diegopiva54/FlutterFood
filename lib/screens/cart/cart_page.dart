@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 import '../../widgets/botton_navigator.dart';
 import '../../widgets/show_image_cached_network.dart';
+import '../../stores/foods.store.dart';
+import '../../stores/rastaurant.store.dart';
+import '../../models/Food.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({Key key}) : super(key: key);
+  FoodsStore _storeFood;
+  RestaurantStore _storeRestaurant;
 
   @override
   Widget build(BuildContext context) {
+    _storeFood = Provider.of<FoodsStore>(context);
+    _storeRestaurant = Provider.of<RestaurantStore>(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -43,29 +51,37 @@ class CartScreen extends StatelessWidget {
   ///Constrói o topo da tela de carrinho
   ///
   Widget _buildHeader() {
-    return Container(
-      alignment: Alignment.topLeft,
-      margin: EdgeInsets.all(16),
-      child: Text(
-        "Total (3) Itens",
-        style: TextStyle(color: Colors.black),
-      ),
-    );
+    return Observer(
+        builder: (context) => Container(
+              alignment: Alignment.topLeft,
+              margin: EdgeInsets.all(16),
+              child: Text(
+                "Total (${_storeFood.cartItems.length}) Itens",
+                style: TextStyle(color: Colors.black),
+              ),
+            ));
   }
 
   Widget _buildCartList(context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      primary: false,
-      itemCount: 6,
-      itemBuilder: (context, index) => _buildCartItem(context),
+    return Observer(
+      builder: (context) => ListView.builder(
+          shrinkWrap: true,
+          primary: false,
+          itemCount: _storeFood.cartItems.length,
+          itemBuilder: (context, index) {
+            final Map<String, dynamic> itemCart = _storeFood.cartItems[index];
+
+            return _buildCartItem(itemCart, context);
+          }),
     );
   }
 
   ///
   ///Controi o card do carrinho
   ///
-  Widget _buildCartItem(context) {
+  Widget _buildCartItem(Map<String, dynamic> itemCart, context) {
+    final Food food = itemCart['product'];
+
     return Stack(
       children: [
         Container(
@@ -79,29 +95,35 @@ class CartScreen extends StatelessWidget {
             padding: EdgeInsets.all(4),
             child: Row(
               children: [
-                ShowImageCachedNetwork(
-                    'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png'),
-                _showDetailItemCart(context),
+                ShowImageCachedNetwork(food.image != null
+                    ? food.image
+                    : 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png'),
+                _showDetailItemCart(food, itemCart, context),
               ],
             ),
           ),
         ),
         Align(
           alignment: Alignment.topRight,
-          child: Container(
-            margin: EdgeInsets.only(top: 2, right: 4),
-            height: 24,
-            width: 24,
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.all(
-                Radius.circular(100),
+          child: GestureDetector(
+            onTap: () {
+              _storeFood.removeFoodCart(food);
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 2, right: 4),
+              height: 24,
+              width: 24,
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(100),
+                ),
               ),
-            ),
-            child: Icon(
-              Icons.close,
-              size: 20,
-              color: Colors.white,
+              child: Icon(
+                Icons.close,
+                size: 20,
+                color: Colors.white,
+              ),
             ),
           ),
         )
@@ -112,7 +134,8 @@ class CartScreen extends StatelessWidget {
   ///
   /// Controi o conteudo dentro dos cards
   ///
-  Widget _showDetailItemCart(context) {
+  Widget _showDetailItemCart(
+      Food food, Map<String, dynamic> itemCart, context) {
     return Expanded(
       child: Container(
         padding: EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 5),
@@ -121,7 +144,8 @@ class CartScreen extends StatelessWidget {
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'PIZZA HUT',
+              // food.name,
+              'comida',
               maxLines: 2,
               style: TextStyle(
                   fontSize: 14, color: Theme.of(context).primaryColor),
@@ -135,31 +159,42 @@ class CartScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "R\$ 399,00",
+                    "R\$ ${food.price.toStringAsFixed(2)}",
                     style: TextStyle(fontSize: 12, color: Colors.green),
                   ),
                   Container(
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.remove,
-                          size: 24,
-                          color: Colors.grey.shade700,
+                        GestureDetector(
+                          onTap: () {
+                            _storeFood.decrementFoodCart(food);
+                          },
+                          child: Icon(
+                            Icons.remove,
+                            size: 24,
+                            color: Colors.grey.shade700,
+                          ),
                         ),
                         Container(
                           padding: EdgeInsets.only(
                               top: 4, bottom: 4, left: 12, right: 12),
                           child: Text(
-                            '2',
+                            itemCart['qty'].toString(),
                             style: TextStyle(
                                 fontSize: 15,
                                 color: Theme.of(context).primaryColor),
                           ),
                         ),
-                        Icon(
-                          Icons.add,
-                          size: 24,
-                          color: Colors.grey.shade700,
+                        GestureDetector(
+                          onTap: () {
+                            _storeFood.incrementFoodCart(food);
+                            print(food.name);
+                          },
+                          child: Icon(
+                            Icons.add,
+                            size: 24,
+                            color: Colors.grey.shade700,
+                          ),
                         ),
                       ],
                     ),
@@ -174,26 +209,30 @@ class CartScreen extends StatelessWidget {
   }
 
   Widget _buildTextTotalCart() {
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 10, top: 20, bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Totais",
-            style: TextStyle(
-                color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Container(height: 5),
-          Text(
-            "Qtd itens: 8",
-            style: TextStyle(color: Colors.black, fontSize: 14),
-          ),
-          Text(
-            "Valor total: R\$ 49,00",
-            style: TextStyle(color: Colors.black, fontSize: 15),
-          ),
-        ],
+    return Observer(
+      builder: (context) => Container(
+        margin: EdgeInsets.only(left: 20, right: 10, top: 20, bottom: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Totais",
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            ),
+            Container(height: 5),
+            Text(
+              "Qtd itens: ${_storeFood.cartItems.length}",
+              style: TextStyle(color: Colors.black, fontSize: 14),
+            ),
+            Text(
+              "Valor total: R\$ ${_storeFood.totalCart.toStringAsFixed(2)}",
+              style: TextStyle(color: Colors.black, fontSize: 15),
+            ),
+          ],
+        ),
       ),
     );
   }

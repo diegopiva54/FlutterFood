@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_food/constants/api.dart';
 
 import '../../../widgets/show_image_cached_network.dart';
+import '../../../models/Restaurant.dart';
 
 class RestaurantCard extends StatelessWidget {
-  final String uuid;
-  final String name;
-  final String image;
-  final String contact;
+  final Restaurant restaurant;
 
-  RestaurantCard({this.uuid, this.name, this.image, this.contact});
+  RestaurantCard({this.restaurant});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print(this.name);
-        Navigator.pushNamed(context, '/foods');
+        // print("$API_URL" + restaurant.name);
+        Navigator.pushNamed(context, '/foods', arguments: restaurant);
       },
       child: Container(
         padding: EdgeInsets.only(top: 4, right: 1, left: 1),
@@ -34,12 +33,12 @@ class RestaurantCard extends StatelessWidget {
                   Container(
                     width: 60,
                     height: 60,
-                    child: ShowImageCachedNetwork(this.image),
+                    child: ShowImageCachedNetwork(this.restaurant.image),
                   ),
                   VerticalDivider(color: Colors.black26),
                   Expanded(
                       child: Text(
-                    name,
+                    this.restaurant.name,
                     style: TextStyle(
                         color: Colors.black54,
                         fontWeight: FontWeight.bold,

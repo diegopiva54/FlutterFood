@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/show_image_cached_network.dart';
+import '../models/Food.dart';
+import '../stores/foods.store.dart';
 
 class FoodCard extends StatelessWidget {
-  String identify;
-  String title;
-  String description;
-  String price;
-  String image;
   bool NotShowIconCart;
+  Food food;
+  //FoodsStore storeFoods = new FoodsStore();
 
-  FoodCard(
-      {this.identify,
-      this.title,
-      this.description,
-      this.price,
-      this.image,
-      this.NotShowIconCart = false});
+  FoodCard({
+    this.NotShowIconCart = false,
+    this.food,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +48,7 @@ class FoodCard extends StatelessWidget {
       height: 60,
       margin: EdgeInsets.only(right: 5),
       child: ShowImageCachedNetwork(
+          //food.image
           'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png'),
     );
   }
@@ -61,15 +59,17 @@ class FoodCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(this.title,
-              style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold)),
+          Text(
+            '${this.food.name}',
+            style: TextStyle(
+                color: Colors.black54,
+                fontSize: 16,
+                fontWeight: FontWeight.bold),
+          ),
           Container(
             height: 2,
           ),
-          Text(this.description,
+          Text('${this.food.description}',
               style: TextStyle(
                   color: Colors.black38,
                   fontSize: 12,
@@ -77,7 +77,7 @@ class FoodCard extends StatelessWidget {
           Container(
             height: 8,
           ),
-          Text("R\$ $price",
+          Text("R\$ ${this.food.price.toStringAsFixed(2)}",
               style: TextStyle(
                   color: Colors.black38,
                   fontSize: 14,
@@ -88,12 +88,29 @@ class FoodCard extends StatelessWidget {
   }
 
   Widget _buildButtonCart(context) {
+    final storeFoods = Provider.of<FoodsStore>(context);
+
     return NotShowIconCart
         ? Container()
         : Container(
             child: IconTheme(
               data: IconThemeData(color: Theme.of(context).primaryColor),
-              child: Icon(Icons.shopping_cart_outlined),
+              child: storeFoods.inFoodCart(food)
+                  ? GestureDetector(
+                      onTap: () {
+                        storeFoods.removeFoodCart(food);
+                      },
+                      child: Icon(
+                        Icons.remove_shopping_cart_outlined,
+                        color: Colors.red,
+                      ),
+                    )
+                  : GestureDetector(
+                      onTap: () {
+                        storeFoods.addFoodCart(food);
+                      },
+                      child: Icon(Icons.shopping_cart_outlined),
+                    ),
             ),
           );
   }
