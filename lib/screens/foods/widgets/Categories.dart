@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
+
 import '../../../models/Category.dart';
+import '../../../stores/categories.store.dart';
 
 class Categories extends StatelessWidget {
   List<Category> _categories;
+  CategoriesStore storeCategories;
 
   Categories(this._categories);
 
   @override
   Widget build(BuildContext context) {
+    storeCategories = Provider.of<CategoriesStore>(context);
     return _buildCategories();
   }
 
@@ -27,20 +33,31 @@ class Categories extends StatelessWidget {
   }
 
   Widget _buildCategory(Category category) {
-    return Container(
+    final String identifyCategory = category.identify;
+    final bool inFilter = storeCategories.inFilter(identifyCategory);
+
+    return GestureDetector(
+      onTap: () {
+        inFilter
+            ? storeCategories.removeFilter(identifyCategory)
+            : storeCategories.addFilter(identifyCategory);
+      },
+      child: Container(
         padding: EdgeInsets.only(top: 2, bottom: 2, left: 20, right: 20),
         margin: EdgeInsets.all(5),
         decoration: BoxDecoration(
-            border: Border.all(
-                color: category.name == 'Bolos' ? Colors.black : Colors.grey),
+            color: inFilter ? Colors.orange[300] : Colors.white,
+            border: Border.all(color: inFilter ? Colors.white : Colors.grey),
             borderRadius: BorderRadius.circular(100)),
         child: Center(
           child: Text(
             category.name,
             style: TextStyle(
-                color: category.name == 'Bolos' ? Colors.black : Colors.grey,
+                color: inFilter ? Colors.grey[800] : Colors.grey,
                 fontWeight: FontWeight.bold),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

@@ -59,14 +59,15 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
   }
 
   void getRestaurants() async {
-    setState(() => isLoading = true);
+    setState(() {
+      isLoading = true;
+    });
 
     final restaurants = await RestaurantRepository().getRestaurants();
 
     setState(() {
       _restaurants.addAll(restaurants);
+      isLoading = false;
     });
-
-    setState(() => isLoading = false);
   }
 }

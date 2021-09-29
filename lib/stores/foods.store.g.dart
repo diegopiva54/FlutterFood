@@ -73,9 +73,10 @@ mixin _$FoodsStore on _FoodsStoreBase, Store {
       AsyncAction('_FoodsStoreBase.getFoodsFromApi');
 
   @override
-  Future<dynamic> getFoodsFromApi(String tokenCompany) {
+  Future<dynamic> getFoodsFromApi(String tokenCompany,
+      {List<String> categories}) {
     return _$getFoodsFromApiAsyncAction
-        .run(() => super.getFoodsFromApi(tokenCompany));
+        .run(() => super.getFoodsFromApi(tokenCompany, categories: categories));
   }
 
   final _$_FoodsStoreBaseActionController =

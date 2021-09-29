@@ -24,6 +24,36 @@ mixin _$CategoriesStore on _CategoriesStoreBase, Store {
     });
   }
 
+  final _$filtersAtom = Atom(name: '_CategoriesStoreBase.filters');
+
+  @override
+  List<String> get filters {
+    _$filtersAtom.reportRead();
+    return super.filters;
+  }
+
+  @override
+  set filters(List<String> value) {
+    _$filtersAtom.reportWrite(value, super.filters, () {
+      super.filters = value;
+    });
+  }
+
+  final _$filterChangedAtom = Atom(name: '_CategoriesStoreBase.filterChanged');
+
+  @override
+  bool get filterChanged {
+    _$filterChangedAtom.reportRead();
+    return super.filterChanged;
+  }
+
+  @override
+  set filterChanged(bool value) {
+    _$filterChangedAtom.reportWrite(value, super.filterChanged, () {
+      super.filterChanged = value;
+    });
+  }
+
   final _$isLoadingAtom = Atom(name: '_CategoriesStoreBase.isLoading');
 
   @override
@@ -96,9 +126,55 @@ mixin _$CategoriesStore on _CategoriesStoreBase, Store {
   }
 
   @override
+  void addFilter(String identify) {
+    final _$actionInfo = _$_CategoriesStoreBaseActionController.startAction(
+        name: '_CategoriesStoreBase.addFilter');
+    try {
+      return super.addFilter(identify);
+    } finally {
+      _$_CategoriesStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeFilter(String identify) {
+    final _$actionInfo = _$_CategoriesStoreBaseActionController.startAction(
+        name: '_CategoriesStoreBase.removeFilter');
+    try {
+      return super.removeFilter(identify);
+    } finally {
+      _$_CategoriesStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  bool inFilter(String identify) {
+    final _$actionInfo = _$_CategoriesStoreBaseActionController.startAction(
+        name: '_CategoriesStoreBase.inFilter');
+    try {
+      return super.inFilter(identify);
+    } finally {
+      _$_CategoriesStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void clearFilters() {
+    final _$actionInfo = _$_CategoriesStoreBaseActionController.startAction(
+        name: '_CategoriesStoreBase.clearFilters');
+    try {
+      return super.clearFilters();
+    } finally {
+      _$_CategoriesStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 categories: ${categories},
+filters: ${filters},
+filterChanged: ${filterChanged},
 isLoading: ${isLoading}
     ''';
   }

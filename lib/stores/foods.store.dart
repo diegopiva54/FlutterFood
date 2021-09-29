@@ -1,9 +1,6 @@
-import 'dart:ffi';
-
-import 'package:mobx/mobx.dart';
-
-import '../models/Food.dart';
 import '../data/network/repositories/food_repository.dart';
+import 'package:mobx/mobx.dart';
+import '../models/Food.dart';
 
 part 'foods.store.g.dart';
 
@@ -60,28 +57,28 @@ abstract class _FoodsStoreBase with Store {
   }
 
   @action
-  Future getFoodsFromApi(String tokenCompany) async {
+  Future getFoodsFromApi(String tokenCompany, {List<String> categories}) async {
     clearFoods();
     clearCart();
 
     setLoading(true);
 
-    final response = await _repository.getFoods(tokenCompany);
+    final response =
+        await _repository.getFoods(tokenCompany, filterCategories: categories);
 
-    print(response);
-
+    // print(response);
     setLoading(false);
 
     response.map((food) => addFood(Food.fromJson(food))).toList();
   }
 
-  /**
-   * Cart
-   */
+  ///
+  ///Cart
+  ///
 
   @action
   void addFoodCart(Food food) {
-    print('addFoodCart');
+    // print('addFoodCart');
 
     if (inFoodCart(food)) {
       incrementFoodCart(food);
@@ -98,7 +95,7 @@ abstract class _FoodsStoreBase with Store {
 
   @action
   void removeFoodCart(Food food) {
-    print('removeFoodCart');
+    // print('removeFoodCart');
 
     cartItems.removeWhere((value) => value['identify'] == food.identify);
 
@@ -107,7 +104,7 @@ abstract class _FoodsStoreBase with Store {
 
   @action
   void clearCart() {
-    print('clearCart');
+    // print('clearCart');
     cartItems.clear();
 
     calcTotalCart();
@@ -153,7 +150,7 @@ abstract class _FoodsStoreBase with Store {
         .map((value) => total += value['qty'] * value['product'].price)
         .toList();
 
-    print(total);
+    // print(total);
     totalCart = total;
 
     foods = foods;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/Food.dart';
 import '../../models/Restaurant.dart';
@@ -13,6 +14,8 @@ import '../../stores/categories.store.dart';
 import '../../stores/rastaurant.store.dart';
 
 class FoodsScreen extends StatefulWidget {
+  FoodsScreen({Key key}) : super(key: key);
+
   @override
   _FoodsScreenState createState() => _FoodsScreenState();
 }
@@ -23,6 +26,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
   FoodsStore storeFoods;
   CategoriesStore storeCategories;
   RestaurantStore storeRestaurant;
+  ReactionDisposer disposer;
 
   @override
   void didChangeDependencies() {
@@ -35,9 +39,24 @@ class _FoodsScreenState extends State<FoodsScreen> {
     RouteSettings settings = ModalRoute.of(context).settings;
     _restaurant = settings.arguments;
 
+    disposer =
+        reaction((_) => storeCategories.filterChanged, (filterChanged) async {
+      if (!storeCategories.isLoading && !storeFoods.isLoading) {
+        await storeFoods.getFoodsFromApi(_restaurant.identify,
+            categories: storeCategories.filters);
+        // print('filtros alterados');
+      }
+    });
+
     storeRestaurant.setRestaurant(_restaurant);
     storeCategories.getCategories(_restaurant.identify);
     storeFoods.getFoodsFromApi(_restaurant.identify);
+  }
+
+  @override
+  void dispose() {
+    disposer();
+    super.dispose();
   }
 
   @override
@@ -81,18 +100,15 @@ class _FoodsScreenState extends State<FoodsScreen> {
 
   Widget _buildFoods() {
     return Container(
-      margin: EdgeInsets.only(top: 5),
-      height: (MediaQuery.of(context).size.height - 200),
-      width: MediaQuery.of(context).size.width,
-      child: ListView.builder(
-          itemCount: storeFoods.foods.length,
-          itemBuilder: (context, index) {
-            final Food food = storeFoods.foods[index];
+        margin: EdgeInsets.only(top: 5),
+        height: (MediaQuery.of(context).size.height - 200),
+        width: MediaQuery.of(context).size.width,
+        child: ListView.builder(
+            itemCount: storeFoods.foods.length,
+            itemBuilder: (context, index) {
+              final Food food = storeFoods.foods[index];
 
-            return FoodCard(
-              food: food,
-            );
-          }),
-    );
+              return FoodCard(food: food);
+            }));
   }
 }
