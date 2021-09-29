@@ -6,16 +6,20 @@ import '../../widgets/botton_navigator.dart';
 import '../../widgets/show_image_cached_network.dart';
 import '../../stores/foods.store.dart';
 import '../../stores/rastaurant.store.dart';
+import '../../stores/orders.store.dart';
 import '../../models/Food.dart';
 
 class CartScreen extends StatelessWidget {
   FoodsStore _storeFood;
   RestaurantStore _storeRestaurant;
+  OrdersStore _storeOrder;
+  TextEditingController _commentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     _storeFood = Provider.of<FoodsStore>(context);
     _storeRestaurant = Provider.of<RestaurantStore>(context);
+    _storeOrder = Provider.of<OrdersStore>(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -244,6 +248,7 @@ class CartScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: 5, bottom: 5, left: 8, right: 8),
       child: TextFormField(
+        controller: _commentController,
         autocorrect: true,
         style: TextStyle(color: Theme.of(context).primaryColor),
         cursorColor: Theme.of(context).primaryColor,
@@ -271,22 +276,40 @@ class CartScreen extends StatelessWidget {
   ///
   Widget _buildCheckout(context) {
     return Container(
-        margin: EdgeInsets.only(top: 10, bottom: 50, left: 8, right: 8),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(16)),
-            color: Colors.orange[800],
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.grey, offset: Offset(0.0, 1.0), blurRadius: 6)
-            ]),
-        child: RaisedButton(
-          onPressed: () => {print('clicou')},
+      margin: EdgeInsets.only(top: 10, bottom: 50, left: 8, right: 8),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          color: Colors.orange[800],
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey, offset: Offset(0.0, 1.0), blurRadius: 6)
+          ]),
+      child: Observer(
+        builder: (context) => RaisedButton(
+          onPressed: () {
+            _storeOrder.isMakingOrder ? null : _makeOrder(context);
+          },
           color: Colors.transparent,
           elevation: 0,
-          child: Text(
-            'Finalizar Pedido',
-            style: TextStyle(fontSize: 16),
-          ),
-        ));
+          child: _storeOrder.isMakingOrder
+              ? Text('Fazendo o pedido...')
+              : Text(
+                  'Finalizar Pedido',
+                  style: TextStyle(fontSize: 16),
+                ),
+        ),
+      ),
+    );
+  }
+
+  Future _makeOrder(context) async {
+    await _storeOrder.makeOrder(
+        _storeRestaurant.restaurant.identify, _storeFood.cartItems,
+        comment: _commentController.text);
+
+    _storeFood.clearCart();
+    _commentController.text = '';
+
+    Navigator.pushReplacementNamed(context, '/orders');
   }
 }

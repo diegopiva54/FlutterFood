@@ -6,6 +6,7 @@ import 'theme/app_theme.dart';
 import '../stores/foods.store.dart';
 import '../stores/categories.store.dart';
 import '../stores/rastaurant.store.dart';
+import '../stores/orders.store.dart';
 
 void main() => runApp(FlutterFoodApp()); // função principal
 
@@ -22,6 +23,9 @@ class FlutterFoodApp extends StatelessWidget {
         ),
         Provider<RestaurantStore>(
           create: (_) => RestaurantStore(),
+        ),
+        Provider<OrdersStore>(
+          create: (_) => OrdersStore(),
         ),
       ],
       child: MaterialApp(
