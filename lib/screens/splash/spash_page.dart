@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
+import '../../constants/api.dart';
 import '../../stores/auth.store.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -59,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<bool> _checkAuth() async {
-    final String token = await storage.read(key: 'token_sanctum');
+    final String token = await storage.read(key: API_TOKEN);
 
     if (token != null) {
       final bool isAuthenticated = await _authStore.getMe();

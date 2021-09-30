@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_food/constants/api.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:device_info/device_info.dart';
 
+import '../../../constants/api.dart';
 import '../dio_client.dart';
 import '../../../models/User.dart';
 import '../interceptors/dio_interceptor_auth.dart';
@@ -56,7 +56,7 @@ class AuthRepository {
   }
 
   Future<User> getMe() async {
-    final String token = await storage.read(key: 'token_sanctum');
+    final String token = await storage.read(key: API_TOKEN);
 
     print('entrou 4');
     print(token);
@@ -80,12 +80,12 @@ class AuthRepository {
   }
 
   Future saveToken(String token) async {
-    await storage.write(key: 'token_sanctum', value: token);
+    await storage.write(key: API_TOKEN, value: token);
     print('gravada');
   }
 
   Future removeToken() async {
-    await storage.delete(key: 'token_sanctum');
+    await storage.delete(key: API_TOKEN);
   }
 
   Future logout() async {
