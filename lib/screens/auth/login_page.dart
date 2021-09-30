@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
 import './widgets/heading_auth.dart';
+import '../../stores/auth.store.dart';
 
 class LoginScreen extends StatelessWidget {
   double _deviceWidth;
   double _deviceHeight;
 
+  AuthStore _authStore;
+
+  TextEditingController _email = TextEditingController();
+  TextEditingController _password = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    _authStore = Provider.of<AuthStore>(context);
+
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
 
     _deviceWidth = MediaQuery.of(context).size.width;
@@ -17,7 +27,9 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         body: SingleChildScrollView(
-          child: _loginPageUI(context),
+          child: Observer(
+            builder: (context) => _loginPageUI(context),
+          ),
         ));
   }
 
@@ -62,6 +74,7 @@ class LoginScreen extends StatelessWidget {
 
   Widget _emailTextField(context) {
     return TextFormField(
+      controller: _email,
       autocorrect: false,
       // autofocus: true,
       style: TextStyle(color: Theme.of(context).primaryColor),
@@ -81,6 +94,7 @@ class LoginScreen extends StatelessWidget {
 
   Widget _passwordTextField(context) {
     return TextFormField(
+      controller: _password,
       autocorrect: false,
       // autofocus: true,
       obscureText: true,
@@ -102,10 +116,11 @@ class LoginScreen extends StatelessWidget {
       width: _deviceWidth,
       child: MaterialButton(
         onPressed: () {
-          Navigator.pushReplacementNamed(context, '/restaurants');
+          _authStore.isLoading ? null : _auth(context);
+          // Navigator.pushReplacementNamed(context, '/restaurants');
         },
         color: Theme.of(context).primaryColor,
-        child: Text('ENTRAR '),
+        child: Text(_authStore.isLoading ? 'Entrando' : 'ENTRAR '),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
@@ -122,5 +137,11 @@ class LoginScreen extends StatelessWidget {
         style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 15),
       ),
     );
+  }
+
+  Future _auth(context) async {
+    await _authStore.auth(_email.text, _password.text);
+
+    Navigator.pushReplacementNamed(context, '/restaurants');
   }
 }
