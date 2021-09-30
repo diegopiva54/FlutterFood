@@ -8,57 +8,13 @@ import '../../widgets/food_card.dart';
 import '../../models/Evaluation.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
-  Order _order = Order(
-      identify: 'fadfafafaf',
-      date: '31/10/2021',
-      status: 'open',
-      table: 'Mesa X',
-      total: (49).toDouble(),
-      comment: 'Sem cebola',
-      foods: [
-        Food(
-            name: 'Pizza Calabresa',
-            description: 'massa de pizza, presunto, mussarela e calabresa',
-            image:
-                'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-            price: 56.50,
-            identify: 'jfkadsopajfpa'),
-        Food(
-            name: 'Pizza Marguerita',
-            description: 'massa de pizza, presunto, mussarela e manjericão',
-            image:
-                'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-            price: 59.50,
-            identify: 'fafdaca'),
-        Food(
-            name: 'Pizza Marguerita',
-            description: 'massa de pizza, presunto, mussarela e manjericão',
-            image:
-                'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-            price: 59.50,
-            identify: 'fafdaca'),
-        Food(
-            name: 'Pizza Marguerita',
-            description: 'massa de pizza, presunto, mussarela e manjericão',
-            image:
-                'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-            price: 59.50,
-            identify: 'fafdaca'),
-        Food(
-            name: 'Pizza Marguerita',
-            description: 'massa de pizza, presunto, mussarela e manjericão',
-            image:
-                'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
-            price: 59.50,
-            identify: 'fafdaca'),
-      ],
-      evaluations: [
-        // Evaluation(comment: 'Pedido muito bom', nameUser: 'Diego', stars: 3),
-        // Evaluation(comment: 'Pedido muito bom', nameUser: 'Diego', stars: 2),
-      ]);
+  Order _order;
 
   @override
   Widget build(BuildContext context) {
+    RouteSettings settings = ModalRoute.of(context).settings;
+    _order = settings.arguments;
+    print(_order.comment);
     return Scaffold(
       appBar: AppBar(
         title: Text("Detalhes do Pedido"),
@@ -79,11 +35,12 @@ class OrderDetailsScreen extends StatelessWidget {
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _makeTextOrder('Pedido', _order.identify),
-          _makeTextOrder('Data', _order.date),
+          _makeTextOrder('Data', _order.date_created),
           _makeTextOrder('Status', _order.status),
-          _makeTextOrder('Valor Total', _order.total.toString() + '0'),
-          _makeTextOrder('Mesa', _order.table),
-          _makeTextOrder('Comentário', _order.comment),
+          _makeTextOrder('Valor Total', _order.total.toString()),
+          _order.comment != null
+              ? _makeTextOrder('Comentário', _order.comment)
+              : Container(),
           Divider(
             color: Colors.grey[400],
             height: 40,
@@ -116,7 +73,7 @@ class OrderDetailsScreen extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            textLabel + ':',
+            textLabel + ': ',
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           Text(
@@ -162,7 +119,8 @@ class OrderDetailsScreen extends StatelessWidget {
             margin: EdgeInsets.only(top: 20, bottom: 30),
             child: RaisedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/evaluation-order');
+                Navigator.pushNamed(context, '/evaluation-order',
+                    arguments: _order.identify);
               },
               color: Colors.orange[700],
               elevation: 2.2,
@@ -207,7 +165,7 @@ class OrderDetailsScreen extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    "${evaluation.nameUser} - ",
+                    "${evaluation.user.name} - ",
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -215,6 +173,7 @@ class OrderDetailsScreen extends StatelessWidget {
                   ),
                   Text(
                     evaluation.comment,
+                    // 'teste',
                     style: TextStyle(color: Colors.black),
                   ),
                 ],

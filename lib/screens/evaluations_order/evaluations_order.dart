@@ -1,20 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 
+import '../../stores/orders.store.dart';
 import '../../widgets/botton_navigator.dart';
 
 class EvaluationOrderScreen extends StatelessWidget {
-  const EvaluationOrderScreen({Key key}) : super(key: key);
+  String _identifyOrder;
+  int _stars = 2;
+  TextEditingController _comment = TextEditingController();
+  OrdersStore _storeOrders;
 
   @override
   Widget build(BuildContext context) {
+    _storeOrders = Provider.of<OrdersStore>(context);
+    RouteSettings settings = ModalRoute.of(context).settings;
+    _identifyOrder = settings.arguments;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Avaliar o pedido'),
         centerTitle: true,
       ),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: _buildScreenEvaluationOrder(context),
+      body: Observer(
+        builder: (context) => _buildScreenEvaluationOrder(context),
+      ),
       bottomNavigationBar: BottonNavigatorCurved(1),
     );
   }
@@ -33,7 +45,7 @@ class EvaluationOrderScreen extends StatelessWidget {
       alignment: Alignment.center,
       padding: EdgeInsets.only(top: 20, bottom: 30),
       child: Text(
-        "Avaliar o Pedido: #135415f4a",
+        "Avaliar o Pedido: #${_identifyOrder}",
         style: TextStyle(
             color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
       ),
@@ -50,7 +62,7 @@ class EvaluationOrderScreen extends StatelessWidget {
         children: [
           _buildRatingBar(context),
           _buildFormTextField(context),
-          _buildButton(),
+          _buildButton(context),
         ],
       ),
     );
@@ -61,20 +73,19 @@ class EvaluationOrderScreen extends StatelessWidget {
   ///
   Widget _buildRatingBar(context) {
     return RatingBar.builder(
-      initialRating: 2,
-      minRating: 1,
-      direction: Axis.horizontal,
-      allowHalfRating: true,
-      itemCount: 5,
-      itemSize: 50,
-      unratedColor: Colors.grey[300],
-      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-      itemBuilder: (context, _) => Icon(
-        Icons.star,
-        color: Colors.amber,
-      ),
-      onRatingUpdate: (value) => {print(value)},
-    );
+        initialRating: _stars.toDouble(),
+        minRating: 1,
+        direction: Axis.horizontal,
+        allowHalfRating: true,
+        itemCount: 5,
+        itemSize: 50,
+        unratedColor: Colors.grey[300],
+        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+        itemBuilder: (context, _) => Icon(
+              Icons.star,
+              color: Colors.amber,
+            ),
+        onRatingUpdate: (value) => _stars = value.toInt());
   }
 
   ///
@@ -84,6 +95,7 @@ class EvaluationOrderScreen extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: 20),
       child: TextFormField(
+        controller: _comment,
         autocorrect: true,
         style: TextStyle(color: Theme.of(context).primaryColor),
         cursorColor: Theme.of(context).primaryColor,
@@ -106,21 +118,28 @@ class EvaluationOrderScreen extends StatelessWidget {
     );
   }
 
-  _buildButton() {
+  _buildButton(context) {
     return Container(
       padding: EdgeInsets.only(top: 5, bottom: 5),
       child: RaisedButton(
         onPressed: () {
-          print('avaliado');
+          _storeOrders.isLoading ? null : _makeEvaluationOrder(context);
         },
-        color: Colors.orange[700],
+        color: _storeOrders.isLoading ? Colors.grey[700] : Colors.orange[700],
         elevation: 2.2,
-        child: Text('Enviar Avaliação',
+        child: Text(_storeOrders.isLoading ? 'Avaliando' : 'Enviar Avaliação',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
         ),
       ),
     );
+  }
+
+  Future _makeEvaluationOrder(context) async {
+    await _storeOrders.evaluationOrder(_identifyOrder, _stars,
+        comment: _comment.text);
+
+    Navigator.pushReplacementNamed(context, '/orders');
   }
 }

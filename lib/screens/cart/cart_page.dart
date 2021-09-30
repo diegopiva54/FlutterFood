@@ -149,7 +149,7 @@ class CartScreen extends StatelessWidget {
           children: [
             Text(
               // food.name,
-              'comida',
+              food.name,
               maxLines: 2,
               style: TextStyle(
                   fontSize: 14, color: Theme.of(context).primaryColor),

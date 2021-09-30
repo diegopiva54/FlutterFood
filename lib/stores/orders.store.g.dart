@@ -24,6 +24,36 @@ mixin _$OrdersStore on _OrdersStoreBase, Store {
     });
   }
 
+  final _$isLoadingAtom = Atom(name: '_OrdersStoreBase.isLoading');
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.reportRead();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
+    });
+  }
+
+  final _$ordersAtom = Atom(name: '_OrdersStoreBase.orders');
+
+  @override
+  ObservableList<Order> get orders {
+    _$ordersAtom.reportRead();
+    return super.orders;
+  }
+
+  @override
+  set orders(ObservableList<Order> value) {
+    _$ordersAtom.reportWrite(value, super.orders, () {
+      super.orders = value;
+    });
+  }
+
   final _$makeOrderAsyncAction = AsyncAction('_OrdersStoreBase.makeOrder');
 
   @override
@@ -34,10 +64,54 @@ mixin _$OrdersStore on _OrdersStoreBase, Store {
         .run(() => super.makeOrder(tokenCompany, foods, comment: comment));
   }
 
+  final _$getMyOrdersAsyncAction = AsyncAction('_OrdersStoreBase.getMyOrders');
+
+  @override
+  Future<dynamic> getMyOrders() {
+    return _$getMyOrdersAsyncAction.run(() => super.getMyOrders());
+  }
+
+  final _$evaluationOrderAsyncAction =
+      AsyncAction('_OrdersStoreBase.evaluationOrder');
+
+  @override
+  Future<dynamic> evaluationOrder(String identifyOrder, int stars,
+      {String comment}) {
+    return _$evaluationOrderAsyncAction.run(
+        () => super.evaluationOrder(identifyOrder, stars, comment: comment));
+  }
+
+  final _$_OrdersStoreBaseActionController =
+      ActionController(name: '_OrdersStoreBase');
+
+  @override
+  void add(Order order) {
+    final _$actionInfo = _$_OrdersStoreBaseActionController.startAction(
+        name: '_OrdersStoreBase.add');
+    try {
+      return super.add(order);
+    } finally {
+      _$_OrdersStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void clear() {
+    final _$actionInfo = _$_OrdersStoreBaseActionController.startAction(
+        name: '_OrdersStoreBase.clear');
+    try {
+      return super.clear();
+    } finally {
+      _$_OrdersStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
-isMakingOrder: ${isMakingOrder}
+isMakingOrder: ${isMakingOrder},
+isLoading: ${isLoading},
+orders: ${orders}
     ''';
   }
 }

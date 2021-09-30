@@ -1,32 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_food/stores/orders.store.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
+import '../../widgets/custom_circular_progress_indicator.dart';
 import '../../widgets/botton_navigator.dart';
 import '../../models/Order.dart';
 
 class OrdersScreen extends StatelessWidget {
-  List<Order> _orders = [
-    new Order(date: '30/02/2021', identify: 'fadfadaf'),
-    new Order(date: '30/02/2021', identify: 'fadcac'),
-    new Order(date: '30/02/2021', identify: 'fadffaffadaf'),
-    new Order(date: '30/02/2021', identify: 'afafafaf'),
-    new Order(date: '30/02/2021', identify: 'fafdfaf'),
-    new Order(date: '30/02/2021', identify: 'fafaacas'),
-    new Order(date: '30/02/2021', identify: 'dqsdaca'),
-    new Order(date: '30/02/2021', identify: 'cadfadca'),
-    new Order(date: '30/02/2021', identify: 'fqfacasf'),
-    new Order(date: '30/02/2021', identify: 'cacasafaf'),
-    new Order(date: '30/02/2021', identify: 'avbadfg'),
-  ];
+  OrdersStore _storeOrders;
 
   @override
   Widget build(BuildContext context) {
+    _storeOrders = Provider.of<OrdersStore>(context);
+    _storeOrders.getMyOrders();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Meus Pedidos'),
         centerTitle: true,
       ),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: _buildOrderScreen(context),
+      body: Observer(
+        builder: (context) => _buildOrderScreen(context),
+      ),
       bottomNavigationBar: BottonNavigatorCurved(1),
     );
   }
@@ -41,7 +38,9 @@ class OrdersScreen extends StatelessWidget {
         Divider(
           color: Colors.grey[400],
         ),
-        _buildOrdersList(context),
+        _storeOrders.isLoading
+            ? CustomCircularProgressIndicator(textLabel: 'Carregando...')
+            : _buildOrdersList(context),
       ],
     );
   }
@@ -60,9 +59,9 @@ class OrdersScreen extends StatelessWidget {
   Widget _buildOrdersList(context) {
     return Expanded(
       child: ListView.builder(
-        itemCount: this._orders.length,
+        itemCount: this._storeOrders.orders.length,
         itemBuilder: (BuildContext context, int index) {
-          final Order order = this._orders[index];
+          final Order order = this._storeOrders.orders[index];
 
           return _buildItemOrder(order, context);
         },
@@ -77,7 +76,7 @@ class OrdersScreen extends StatelessWidget {
         style: TextStyle(color: Theme.of(context).primaryColor),
       ),
       subtitle: Text(
-        "Data #${order.date}",
+        "Data ${order.date_created}",
         style: TextStyle(color: Colors.grey),
       ),
       trailing: IconTheme(
@@ -86,7 +85,7 @@ class OrdersScreen extends StatelessWidget {
       ),
       onTap: () {
         print(order.identify);
-        Navigator.pushNamed(context, '/details-order');
+        Navigator.pushNamed(context, '/details-order', arguments: order);
       },
     );
   }
