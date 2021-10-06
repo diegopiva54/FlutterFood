@@ -14,7 +14,9 @@ abstract class _AuthStoreBase with Store {
   User user;
 
   @action
-  void setUser(User value) => user = value;
+  void setUser(User value) {
+    user = value;
+  }
 
   @observable
   bool isLoading = false;
@@ -50,7 +52,7 @@ abstract class _AuthStoreBase with Store {
 
   @action
   Future getMe() async {
-    await _authRepository.getMe().then((value) => setUser(user));
+    await _authRepository.getMe().then((user) => setUser(user));
   }
 
   @action
