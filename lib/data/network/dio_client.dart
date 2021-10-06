@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import './interceptors/dio_interceptor.dart';
+import '../network/exceptions/api_exception.dart';
 
 class DioClient {
   Dio _dio;
@@ -17,9 +18,10 @@ class DioClient {
       // print(response);
 
       return response;
-    } catch (e) {
-      // print(e.toString());
-      throw e;
+    } on DioError catch (e) {
+      Future.error({});
+
+      ApiException(e.response);
     }
   }
 
@@ -31,9 +33,10 @@ class DioClient {
       // print(response);
 
       return response;
-    } catch (e) {
-      // print(e.toString());
-      throw e;
+    } on DioError catch (e) {
+      Future.error({});
+
+      ApiException(e.response);
     }
   }
 }

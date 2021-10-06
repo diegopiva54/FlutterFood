@@ -25,29 +25,24 @@ abstract class _AuthStoreBase with Store {
   void setLoading(bool value) => isLoading = value;
 
   @action
-  Future<bool> auth(String email, String password) async {
+  Future auth(String email, String password) async {
     setLoading(true);
 
-    await _authRepository.auth(email, password);
-
-    await getMe();
-
-    setLoading(false);
-
-    return true;
+    return await _authRepository
+        .auth(email, password)
+        .then((value) async => await getMe())
+        .whenComplete(() => setLoading(false));
   }
 
   @action
-  Future<bool> register(String name, String email, String password) async {
+  Future register(String name, String email, String password) async {
     setLoading(true);
 
-    await _authRepository.register(name, email, password);
-
-    await auth(email, password);
-
-    setLoading(false);
-
-    return true;
+    return await _authRepository
+        .register(name, email, password)
+        .then((value) async {
+      await auth(email, password);
+    }).whenComplete(() => setLoading(false));
   }
 
   @action

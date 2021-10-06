@@ -8,6 +8,7 @@ import '../../../constants/api.dart';
 import '../dio_client.dart';
 import '../../../models/User.dart';
 import '../interceptors/dio_interceptor_auth.dart';
+import '../exceptions/api_exception.dart';
 
 class AuthRepository {
   Dio _dio = dioInterceptorAuth();
@@ -29,10 +30,9 @@ class AuthRepository {
 
       return response;
     } on DioError catch (e) {
-      print(e.toString());
-      print(e.response);
-      print(e.response.statusCode);
-      print(e.response.data);
+      Future.error({});
+
+      ApiException(e.response);
     }
   }
 
@@ -48,18 +48,14 @@ class AuthRepository {
 
       return response;
     } on DioError catch (e) {
-      print(e.toString());
-      print(e.response);
-      print(e.response.statusCode);
-      print(e.response.data);
+      Future.error({});
+
+      ApiException(e.response);
     }
   }
 
   Future<User> getMe() async {
     final String token = await storage.read(key: API_TOKEN);
-
-    print('entrou 4');
-    print(token);
 
     if (token != null) {
       _dio.options.headers['Authorization'] = 'Bearer ' + token;
@@ -72,13 +68,14 @@ class AuthRepository {
 
       return User.fromJson(response.data['data']);
     } on DioError catch (e) {
+      //CORRIGIR AQUI
       return Future.error({});
-
-      // print(e.toString());
-      // print(e.response);
-      // print(e.response.statusCode);
-      // print(e.response.data);
     }
+    // } on DioError catch (e) {
+    //   Future.error({});
+
+    //   ApiException(e.response);
+    // }
   }
 
   Future saveToken(String token) async {

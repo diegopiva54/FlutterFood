@@ -140,8 +140,7 @@ class LoginScreen extends StatelessWidget {
   }
 
   Future _auth(context) async {
-    await _authStore.auth(_email.text, _password.text);
-
-    Navigator.pushReplacementNamed(context, '/restaurants');
+    await _authStore.auth(_email.text, _password.text).then(
+        (value) => Navigator.pushReplacementNamed(context, '/restaurants'));
   }
 }
