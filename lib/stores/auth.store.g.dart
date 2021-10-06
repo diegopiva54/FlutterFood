@@ -57,7 +57,7 @@ mixin _$AuthStore on _AuthStoreBase, Store {
   final _$getMeAsyncAction = AsyncAction('_AuthStoreBase.getMe');
 
   @override
-  Future<bool> getMe() {
+  Future<dynamic> getMe() {
     return _$getMeAsyncAction.run(() => super.getMe());
   }
 

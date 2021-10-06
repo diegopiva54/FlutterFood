@@ -23,13 +23,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
     SystemChrome.setEnabledSystemUIOverlays([]);
 
-    _checkAuth().then((bool isAuthenticated) {
-      if (isAuthenticated) {
-        Navigator.pushReplacementNamed(context, '/restaurants');
-        return;
-      }
-      Navigator.pushReplacementNamed(context, '/login');
-    });
+    _checkAuth()
+        .then(
+            (value) => Navigator.pushReplacementNamed(context, '/restaurants'))
+        .catchError(
+            (error) => Navigator.pushReplacementNamed(context, '/login'));
   }
 
   @override
@@ -59,15 +57,22 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
-  Future<bool> _checkAuth() async {
+  Future _checkAuth() async {
     final String token = await storage.read(key: API_TOKEN);
 
     if (token != null) {
-      final bool isAuthenticated = await _authStore.getMe();
+      return await _authStore
+          .getMe()
+          .then((value) => Future.value())
+          .catchError((error) async {
+        print('Splash screem recebeu erro');
 
-      return true;
+        await storage.delete(key: API_TOKEN);
+
+        return Future.error({});
+      });
     }
     // await Future.delayed(Duration(seconds: 3));
-    return false;
+    return Future.error({});
   }
 }
