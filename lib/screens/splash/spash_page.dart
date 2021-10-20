@@ -45,7 +45,14 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Image.asset('assets/images/iconFood.png'),
             ),
             Container(
-              height: 30,
+              height: 40,
+              child: Text(
+                'DimyFood',
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Container(
+              height: 20,
             ),
             CircularProgressIndicator(
               backgroundColor: Colors.white,
