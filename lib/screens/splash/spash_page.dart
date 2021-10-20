@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             Container(
               width: 150,
-              child: Image.asset('assets/images/FlutterFood.png'),
+              child: Image.asset('assets/images/iconFood.png'),
             ),
             Container(
               height: 30,

@@ -12,10 +12,9 @@ class ShowImageCachedNetwork extends StatelessWidget {
     return ClipOval(
       // child: Image.asset('assets/images/IconeFlutterFood.png'),
       child: CachedNetworkImage(
-        height: 30, //remover após colocar imagen correta
-        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png' !=
-                ''
-            ? 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png'
+        // height: 30, //remover após colocar imagen correta
+        imageUrl: this.image != ''
+            ? this.image
             : 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
         placeholder: (context, url) => Container(
           height: 80,

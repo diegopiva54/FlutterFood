@@ -13,7 +13,7 @@ class RestaurantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // print("$API_URL" + restaurant.name);
+        // print(restaurant.image);
         Navigator.pushNamed(context, '/foods', arguments: restaurant);
       },
       child: Container(
@@ -33,8 +33,10 @@ class RestaurantCard extends StatelessWidget {
                   Container(
                     width: 60,
                     height: 60,
-                    child: Image.asset('assets/images/IconeFlutterFood.png'),
-                    // child: ShowImageCachedNetwork(this.restaurant.image),
+                    // child: Image.asset('assets/images/IconeFlutterFood.png'),
+                    child: this.restaurant.image != ''
+                        ? ShowImageCachedNetwork(this.restaurant.image)
+                        : Image.asset('assets/images/icon.png'),
                   ),
                   VerticalDivider(color: Colors.black26),
                   Expanded(

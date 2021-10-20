@@ -12,7 +12,7 @@ class Restaurant {
     return Restaurant(
       identify: jsonData['identify'],
       name: jsonData['name'],
-      image: jsonData['image'],
+      image: jsonData['logo'],
       contact: jsonData['contact'],
     );
   }
