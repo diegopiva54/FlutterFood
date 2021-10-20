@@ -32,6 +32,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text('Restaurantes'),
         centerTitle: true,
       ),

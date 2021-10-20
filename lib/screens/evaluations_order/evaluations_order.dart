@@ -20,6 +20,7 @@ class EvaluationOrderScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text('Avaliar o pedido'),
         centerTitle: true,
       ),

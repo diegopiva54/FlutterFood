@@ -17,6 +17,7 @@ class OrderDetailsScreen extends StatelessWidget {
     print(_order.comment);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text("Detalhes do Pedido"),
         centerTitle: true,
       ),

@@ -63,6 +63,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text('${_restaurant.name}'),
         centerTitle: true,
       ),

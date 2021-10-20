@@ -17,6 +17,7 @@ class OrdersScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text('Meus Pedidos'),
         centerTitle: true,
       ),
