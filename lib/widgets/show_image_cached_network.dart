@@ -15,7 +15,7 @@ class ShowImageCachedNetwork extends StatelessWidget {
         // height: 30, //remover após colocar imagen correta
         imageUrl: this.image != ''
             ? this.image
-            : 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
+            : 'https://dimyfood.com.br/assets/images/iconColor.png',
         placeholder: (context, url) => Container(
           height: 80,
           width: 80,
