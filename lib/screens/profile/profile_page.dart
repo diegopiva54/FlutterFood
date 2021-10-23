@@ -49,8 +49,13 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: 20),
       alignment: Alignment.center,
-      child: CircleAvatar(
-        maxRadius: 60,
+      child: GestureDetector(
+        onTap: () {
+          print('clicou');
+        },
+        child: CircleAvatar(
+          maxRadius: 60,
+        ),
       ),
     );
   }
